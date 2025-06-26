@@ -63,4 +63,19 @@ class FileKitTest {
         FileKit.createFileFromTemplate(file.path, "ID: {{ id }}", mapOf("id" to 42))
         assertEquals("ID: 42", file.readText())
     }
+
+    @Test
+    fun `render template from resource`() {
+        val result = FileKit.renderTemplateFromResource("templates/hello.peb", mapOf("name" to "Megan"))
+        assertEquals("Hello, Megan!", result.trim())
+    }
+
+    @Test
+    fun `create file from template resource`() {
+        val file = tempFile()
+        FileKit.createFileFromTemplateResource(file.path, "templates/hello.peb", mapOf("name" to "Megan"))
+        assertEquals("Hello, Megan!", file.readText().trim())
+    }
+
+    
 }

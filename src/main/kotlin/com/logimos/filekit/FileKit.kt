@@ -57,9 +57,21 @@ object FileKit {
         return writer.toString()
     }
 
+    fun renderTemplateFromResource(resourcePath: String, parameters: Map<String, Any?>): String {
+        val compiledTemplate = pebble.getTemplate(resourcePath)
+        val writer = StringWriter()
+        compiledTemplate.evaluate(writer, parameters)
+        return writer.toString()
+    }
+
     fun createFileFromTemplate(path: String, template: String, parameters: Map<String, Any?>) {
         val content = renderTemplate(template, parameters)
         createFile(path, content)
+    }
+
+    fun createFileFromTemplateResource(destPath: String, resourcePath: String, parameters: Map<String, Any?>) {
+        val content = renderTemplateFromResource(resourcePath, parameters)
+        createFile(destPath, content)
     }
     
     
