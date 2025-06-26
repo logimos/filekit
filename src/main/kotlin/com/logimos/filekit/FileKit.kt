@@ -4,7 +4,9 @@ import java.io.File
 
 object FileKit {
     fun createFile(path: String, content: String = "") {
-        File(path).writeText(content)
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        file.writeText(content)
     }
 
     fun deleteFile(path: String) {
