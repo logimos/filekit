@@ -24,7 +24,9 @@ object FileKit {
     }
 
     fun appendToFile(path: String, content: String) {
-        File(path).appendText(content)
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        file.appendText(content)
     }
 
     fun appendAfterPattern(path: String, pattern: Regex, content: String) {
@@ -48,7 +50,8 @@ object FileKit {
     }
     
     // template functions
-    private val pebble = PebbleEngine.Builder().build()
+    private val pebble = PebbleEngine.Builder()
+    .extension(FileKitExtension()).build()
 
     fun renderTemplate(template: String, parameters: Map<String, Any?>): String {
         val compiledTemplate = pebble.getLiteralTemplate(template)
@@ -68,6 +71,7 @@ object FileKit {
         val content = renderTemplate(template, parameters)
         createFile(path, content)
     }
+
 
     fun createFileFromTemplateResource(destPath: String, resourcePath: String, parameters: Map<String, Any?>) {
         val content = renderTemplateFromResource(resourcePath, parameters)
