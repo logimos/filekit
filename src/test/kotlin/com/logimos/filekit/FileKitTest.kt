@@ -2,13 +2,52 @@ package com.logimos.filekit
 
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
+import java.io.File
 import kotlin.test.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class FileKitTest {
+
+    private fun tempFile(contents: String = ""): File {
+        val file = Files.createTempFile("filekit", ".txt")
+        Files.write(file, contents.toByteArray(Charsets.UTF_8))
+        return file.toFile()
+    }
+
     @Test
-    fun testCreateFile() {
-        val temp = Files.createTempFile("filekit", ".txt")
-        FileKit.createFile(temp.toString(), "hello")
-        assertTrue(java.io.File(temp.toString()).readText() == "hello")
+    fun `create file and test contents`() {
+        val file = tempFile()
+        FileKit.createFile(file.toString(), "hello")
+        assertEquals("hello", file.readText())
+    }
+
+    @Test
+    fun `delete file`() {
+        val file = tempFile("test")
+        FileKit.deleteFile(file.path)
+        assertFalse(file.exists())
+    }
+
+    @Test
+    fun `find and replace text`() {
+        val file = tempFile("abc 123 def 123")
+        FileKit.findAndReplace(file.path, Regex("123"), "XYZ")
+        assertEquals("abc XYZ def XYZ", file.readText())
+    }
+
+    @Test
+    fun `append to end of file`() {
+        val file = tempFile("foo\n")
+        FileKit.appendToFile(file.path, "bar")
+        assertEquals("foo\nbar", file.readText())
+    }
+
+    @Test
+    fun `append after pattern`() {
+        val file = tempFile("one\ntwo\nthree\n")
+        FileKit.appendAfterPattern(file.path, Regex("two"), "INSERTED")
+        println(file.readText() )
+        assertEquals("one\ntwo\nINSERTED\nthree\n", file.readText().replace("\r", ""))
     }
 }
