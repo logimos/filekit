@@ -29,7 +29,9 @@ major:
 	@$(MAKE) bump VERSION_TYPE=major
 
 bump:
-	@if [ -z "$(shell git tag)" ]; then \
+	@bash -c '\
+	set -ex; \
+	if [ -z "$(shell git tag)" ]; then \
 		git tag v0.0.0; \
 	fi; \
 	latest_tag=$$(git describe --tags --abbrev=0); \
@@ -47,6 +49,6 @@ bump:
 		echo "✅ Creating and pushing tag $$new_tag"; \
 		git tag $$new_tag; \
 		git push --tags; \
-	fi
+	fi'
 
 
