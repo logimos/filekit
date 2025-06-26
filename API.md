@@ -9,6 +9,7 @@ This document provides detailed API documentation for the Logimos FileKit librar
 3. [Filters](#filters)
 4. [Functions](#functions)
 5. [StringUtils](#stringutils)
+6. [GetModule](#getmodule)
 
 ## FileKit Object
 
@@ -673,6 +674,33 @@ fun safeRenderTemplate(template: String, params: Map<String, Any?>): String {
     }
 }
 ```
+
+## Get Module
+
+in the build.gradle.kts file ensure that 
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/logimos/filekit")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+```
+
+add add dependecy 
+
+```kotlin
+dependencies {
+    implementation("com.yourorg:filekit:0.1.0")
+}
+
+```
+
 
 This API reference provides comprehensive documentation for all FileKit components. For more examples and usage patterns, see the main [README.md](README.md) and [Pebble Syntax Guide](PEBBLE_SYNTAX.md).
 
