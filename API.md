@@ -677,7 +677,11 @@ fun safeRenderTemplate(template: String, params: Map<String, Any?>): String {
 
 ## Get Module
 
-in the build.gradle.kts file ensure that 
+### Installation
+
+To use FileKit in your project, add the following configuration to your `build.gradle.kts` file:
+
+#### Repository Configuration
 
 ```kotlin
 repositories {
@@ -692,48 +696,87 @@ repositories {
 }
 ```
 
-add add dependecy 
+#### Dependency Configuration
 
 ```kotlin
 dependencies {
-    implementation("com.yourorg:filekit:0.1.0")
+    implementation("com.logimos:filekit:1.0.0")
 }
-
 ```
 
+### GitHub Packages Authentication
+
+To access the GitHub Packages repository, you need to provide authentication credentials. You can do this in several ways:
+
+#### Option 1: Environment Variables (Recommended for CI/CD)
+
+```bash
+export GITHUB_ACTOR=your-github-username
+export GITHUB_TOKEN=your-github-personal-access-token
+```
+
+#### Option 2: Gradle Properties
+
+Create or update your `~/.gradle/gradle.properties` file:
+
+```properties
+gpr.user=your-github-username
+gpr.key=your-github-personal-access-token
+```
+
+#### Option 3: Project Properties
+
+Add to your project's `gradle.properties`:
+
+```properties
+gpr.user=your-github-username
+gpr.key=your-github-personal-access-token
+```
+
+### Creating a GitHub Personal Access Token
+
+1. Go to GitHub Settings → Developer settings → Personal access tokens
+2. Click "Generate new token (classic)"
+3. Select the following scopes:
+   - `read:packages` - Download packages from GitHub Package Registry
+   - `write:packages` - Upload packages to GitHub Package Registry (if you plan to publish)
+4. Copy the generated token and use it as your `GITHUB_TOKEN`
+
+### Alternative: Local Installation
+
+If you prefer to install FileKit locally, you can build and install it to your local Maven repository:
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+Then use the local dependency:
+
+```kotlin
+dependencies {
+    implementation("com.logimos:filekit:1.0.0")
+}
+```
+
+### Version Compatibility
+
+FileKit requires:
+- Kotlin 2.0.0 or higher
+- Java 21 or higher
+- Pebble Templates 3.2.2
+
+### Quick Verification
+
+After adding the dependency, you can verify the installation by running:
+
+```kotlin
+import com.logimos.filekit.FileKit
+
+fun main() {
+    // Test basic functionality
+    FileKit.createFile("test.txt", "Hello from FileKit!")
+    println("FileKit is working correctly!")
+}
+```
 
 This API reference provides comprehensive documentation for all FileKit components. For more examples and usage patterns, see the main [README.md](README.md) and [Pebble Syntax Guide](PEBBLE_SYNTAX.md).
-
-```
-cd /home/maccalsa/dev/kotlin/logimos/utilities/filekit && ./gradlew dependencies --configuration compileClasspath | grep pebble
-
-find ~/.gradle -name "*.jar" | grep pebble | head -1 | xargs jar -tf | grep Filter.class
-
-find ~/.gradle -name "*.jar" | grep pebble | head -1 | xargs jar -xf && javap -cp . io.pebbletemplates.pebble.extension.Filter
-
-
-##
-## Class: {{ name | pascal }}
-## Variable: {{ name | camel }}
-## Constant: {{ name | scream }}
-## File: {{ name | kebab }}.kt
-## API: /api/{{ name | plural | kebab }}
-## Generated: {{ now | date(pattern="yyyy-MM-dd HH:mm") }}
-
-
-## includes 
-
-## {# in base.peb #}
-## {% include "templates/header.peb" %}
-## Hello, {{ name }}!
-
-
-## extends
-
-## {# in base.peb #}
-## {% extends "templates/base.peb" %}
-## {% block content %}
-## Hello, {{ name }}!
-## {% endblock %}
-
-```
