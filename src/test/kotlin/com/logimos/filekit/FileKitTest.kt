@@ -50,4 +50,17 @@ class FileKitTest {
         println(file.readText() )
         assertEquals("one\ntwo\nINSERTED\nthree\n", file.readText().replace("\r", ""))
     }
+
+    @Test
+    fun `render template`() {
+        val result = FileKit.renderTemplate("Welcome, {{ user }}!", mapOf("user" to "Megan"))
+        assertEquals("Welcome, Megan!", result)
+    }
+
+    @Test
+    fun `create file from template`() {
+        val file = tempFile()
+        FileKit.createFileFromTemplate(file.path, "ID: {{ id }}", mapOf("id" to 42))
+        assertEquals("ID: 42", file.readText())
+    }
 }

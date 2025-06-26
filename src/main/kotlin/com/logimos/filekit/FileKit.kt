@@ -1,8 +1,11 @@
 package com.logimos.filekit
 
 import java.io.File
+import java.io.StringWriter
+import io.pebbletemplates.pebble.PebbleEngine
 
 object FileKit {
+
     fun createFile(path: String, content: String = "") {
         val file = File(path)
         file.parentFile?.mkdirs()
@@ -44,6 +47,20 @@ object FileKit {
         file.writeText(finalContent)
     }
     
+    // template functions
+    private val pebble = PebbleEngine.Builder().build()
+
+    fun renderTemplate(template: String, parameters: Map<String, Any?>): String {
+        val compiledTemplate = pebble.getLiteralTemplate(template)
+        val writer = StringWriter()
+        compiledTemplate.evaluate(writer, parameters)
+        return writer.toString()
+    }
+
+    fun createFileFromTemplate(path: String, template: String, parameters: Map<String, Any?>) {
+        val content = renderTemplate(template, parameters)
+        createFile(path, content)
+    }
     
     
 }
